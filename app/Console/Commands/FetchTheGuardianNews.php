@@ -8,6 +8,8 @@ use Illuminate\Console\Command;
 
 class FetchTheGuardianNews extends Command
 {
+    private const PER_PAGE_LIMIT = 10;
+
     /**
      * The name and signature of the console command.
      *
@@ -30,8 +32,10 @@ class FetchTheGuardianNews extends Command
         $request = new TheGuardianRequest;
 
         $request->query()
+            ->add('page-size', self::PER_PAGE_LIMIT)
             ->add('from-date', now()->subDays(1)->format('Y-m-j'))
-            ->add('show-fields', 'byline,headline,body');
+            ->add('show-fields', 'headline,body')
+            ->add('show-tags', 'contributor');
 
         $response = $request->send();
         $decodedBody = $response->json();
@@ -41,14 +45,17 @@ class FetchTheGuardianNews extends Command
         $bar = $this->output->createProgressBar($count);
         $bar->start();
 
-        $responseBody->each(function($article) use ($bar) {
+        $responseBody->each(function ($article) use ($bar) {
+            $author = collect(data_get($article, 'tags'))->first(fn($tag) => $tag === 'contributor');
+            $authorName = data_get($author, 'firstName') . ' ' . data_get($author, 'lastName');
+
             Article::create([
-                'title' => data_get($article,'fields.headline', data_get($article, 'webTitle')),
-                'content' => data_get($article,'fields.body'),
-                'date' => data_get($article,'webPublicationDate'),
+                'title' => data_get($article, 'fields.headline', data_get($article, 'webTitle')),
+                'content' => data_get($article, 'fields.body'),
+                'date' => data_get($article, 'webPublicationDate'),
                 'category' => data_get($article, 'type'),
                 'source' => 'the-guardian',
-                'author' => data_get($article, 'fields.byline'),
+                'author' => $authorName,
             ]);
             $bar->advance();
         });
