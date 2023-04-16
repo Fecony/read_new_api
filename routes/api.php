@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\PreferenceOptionsController;
+use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\PreferenceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,5 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', fn(Request $request) => $request->user());
 
-    Route::get('/preference_options', PreferenceOptionsController::class);
+    Route::get('/preferences', [PreferenceController::class, 'index']);
+    Route::post('/preferences', [PreferenceController::class, 'store']);
+    Route::get('/preference_options', [PreferenceController::class, 'options']);
 });
+
+Route::apiResource('articles', ArticleController::class)->only(['index', 'show']);
