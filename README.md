@@ -25,13 +25,13 @@ Things you might need to test API:
 Clone the project
 
 ```bash
-git clone git@github.com:Fecony/news_api.git
+git clone git@github.com:Fecony/read_new_api.git
 ```
 
 Go to the project directory
 
 ```bash
-cd news_api
+cd read_new_api
 ```
 
 Copy .env.example file to .env on the root folder.
