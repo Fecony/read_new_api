@@ -69,6 +69,15 @@ Run `./vendor/bin/sail artisan key:generate` to generate app key.
 
 After you application is running in Docker container run `./vendor/bin/sail artisan migrate` to run migration files.
 
+### Fetching news
+
+News sources are scraped using Commands, before running them setup News provider API keys in .env file.
+Then you can following run commands to fetch news:
+
+- `app:fetch-news-api` - Fetch [News API](https://newsapi.org/)
+- `app:fetch-the-guardian-news` - Fetch [The Guardina News](https://open-platform.theguardian.com/)
+- `app:fetch-the-new-york-times` - Fetch [The New York Times](https://developer.nytimes.com/apis)
+
 ### Troubleshooting - Common Problems
 
 This page lists solutions to problems you might encounter. Here is a list of common problems.
